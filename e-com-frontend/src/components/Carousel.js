@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 import "../App.css";
 import CI1 from "../assets/images/Carousel/1.png"
@@ -20,9 +21,9 @@ const Carousel = () => {
                             <p className="slider_price">
                                 starting at <span>$75,999</span>
                             </p>
-                            <a href="#" className="button nav-link ">
-                                Shop Now
-                            </a>
+                            <Link to="/Products" className="button nav-link">
+                                    Shop Now
+                                </Link>
                         </div>
                     </div>
                 </div>
@@ -41,9 +42,9 @@ const Carousel = () => {
                                 <p className="slider_price">
                                     starting at <span>$89,499</span>
                                 </p>
-                                <a href="#" className="button nav-link">
+                                <Link to="/Products" className="button nav-link">
                                     Shop Now
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </div>
@@ -62,9 +63,9 @@ const Carousel = () => {
                                 <p className="slider_price">
                                     starting at <span>$14,999</span>
                                 </p>
-                                <a href="#" className="button nav-link">
+                                <Link to="/Products" className="button nav-link">
                                     Shop Now
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </div>

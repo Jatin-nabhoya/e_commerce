@@ -7,7 +7,9 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 // import AuthContext from '../context/AuthContext';
 import Product from "../components/Product";
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+// toast.configure()
 const ProductDetail = () => {
 
   let { user, logoutUser, authToken } = useContext(AuthContext);
@@ -15,6 +17,7 @@ const ProductDetail = () => {
   const { slug } = useParams();
 
   let [product, setProduct] = useState([])
+  let [quantity, setQuantity] = useState([])
   let [tab, setTab] = useState("desc")
   let [cur, setCur] = useState(0)
 
@@ -52,9 +55,9 @@ const ProductDetail = () => {
   }
 
   let AddTOWishList = async () => {
-    const Data = JSON.stringify({ user: user.id, productID: product.id });
+    const Data = JSON.stringify({ productID: product.id });
     console.log(Data)
-    let response = await fetch(`http://127.0.0.1:8000/api/wishlist/`, {
+    let response = await fetch(`http://127.0.0.1:8000/api/addtowishlist/${slug}`, {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
@@ -62,8 +65,49 @@ const ProductDetail = () => {
       },
       body: Data
     })
+
+    let data = await response.json()
+    // console.log(data)
+    // console.log(data.message);
+    if (data.message == "Item added successfully." ) {
+      toast.success(data.message, { position: toast.POSITION.TOP_RIGHT });
+    }
+    else if (data.message == "Item is already in WishList.") {
+      toast.info(data.message, { position: toast.POSITION.TOP_RIGHT });
+    }
+    else{
+      toast.error("user is not login!", { position: toast.POSITION.TOP_RIGHT });
+    }
+  }
+
+  const handleChange =(e)=>{
+    setQuantity(e.target.value)
+  }
+
+  let AddTOCart = async () => {
+    const Data = JSON.stringify({ productID: product.id , quantity: quantity  });
+    console.log(Data)
+    let response = await fetch(`http://127.0.0.1:8000/api/Addtocart/${slug}`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'Authorization': 'Bearer ' + String(authToken.access)
+      },
+      body: Data
+    })
+
     let data = await response.json()
     console.log(data)
+    console.log(data.message);
+    if (data.message == "Item added to your cart" ) {
+      toast.success(data.message, { position: toast.POSITION.TOP_RIGHT });
+    }
+    // else if (data.message == "Item updateed successfully .") {
+    //   toast.info(data.message, { position: toast.POSITION.TOP_RIGHT });
+    // }
+    else{
+      toast.error("user is not login!", { position: toast.POSITION.TOP_RIGHT });
+    }
   }
 
   return (
@@ -152,7 +196,7 @@ const ProductDetail = () => {
                         </li>
                       </ul>
                     </div>
-                  </div>
+                    x                </div>
                 </div>
                 <div className="col-lg-6 col-md-6 col-12">
                   <div className="tm-prodetails-content">
@@ -170,35 +214,21 @@ const ProductDetail = () => {
                     {/* </div> */}
 
                     <div className="tm-prodetails-infos">
-                      <div className="tm-prodetails-singleinfo">
-                        <b>Product ID : </b>010
-                      </div>
+                      {/* <div className="tm-prodetails-singleinfo">
+                        <b>Product ID : </b>{product.id}
+                      </div> */}
                       <div className="tm-prodetails-singleinfo">
                         <b>Category : </b>
-                        {product.category}
+                        {product.category} , {product.sub_category}
                         {/* <a href="#">Ring</a> */}
                       </div>
-                      {/* <div className="tm-prodetails-singleinfo tm-prodetails-tags">
-                              <b>Tags : </b>
-                              <ul>
-                                <li>
-                                  <a href="#">bracelets</a>
-                                </li>
-                                <li>
-                                  <a href="#">diamond</a>
-                                </li>
-                                <li>
-                                  <a href="#">ring</a>
-                                </li>
-                                <li>
-                                  <a href="#">necklaces</a>
-                                </li>
-                              </ul>
-                            </div> */}
+
+
                       <div className="tm-prodetails-singleinfo">
                         <b>Available : </b>
                         <span className="color-theme">In Stock</span>
                       </div>
+
                       <div className="tm-prodetails-singleinfo tm-prodetails-share">
                         <b>Share : </b>
                         <ul>
@@ -234,10 +264,13 @@ const ProductDetail = () => {
                     <div className="tm-prodetails-quantitycart">
                       <h6>Quantity :</h6>
                       <div className="tm-quantitybox">
-                        <input type="number" id="quantity" name="quantity" min="1" defaultValue={1} max={product.inventory_count} />
+                        <input type="number" id="quantity" name="quantity" min="1" defaultValue={1} value={quantity} max={product.inventory_count} onChange={(e)=>handleChange(e)}/>
                       </div>
-                      <FavoriteBorderIcon onClick={AddTOWishList} /> &nbsp;
-                      <Link to="/cart" className="tm-button tm-button-dark nav-link">
+                      <FavoriteBorderIcon
+                        onClick={AddTOWishList}
+                      /> &nbsp;
+                      <ToastContainer />
+                      <Link to="#" className="tm-button tm-button-dark nav-link" onClick={AddTOCart}>
                         Add To Cart
                       </Link>
                     </div>
@@ -427,19 +460,18 @@ const ProductDetail = () => {
 
                     {products.map((data) => (
                       data.slug != slug ?
-                      (<>
-                      <div className="col-4 mb-4 mt-2 col-lg-4 col-md-6 col-sm-6 col-12" 
-                      onClick="refresh"
-                      >
-                        
-                          
-                        <Link to={`/ProductDetail/${data.slug}`} className="nav-link" >
-                          <Product data={data} />
-                        </Link>
-                        
+                        (<>
+                          <div className="col-4 mb-4 mt-2 col-lg-4 col-md-6 col-sm-6 col-12"
+                            onClick="refresh"
+                          >
 
-                      </div>
-                      </>) : null
+
+                            <Link to={`/ProductDetail/${data.slug}`} className="nav-link" >
+                              <Product data={data} />
+                            </Link>
+
+                          </div>
+                        </>) : null
                     ))}
                   </div>
                 </div>

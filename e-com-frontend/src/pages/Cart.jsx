@@ -18,7 +18,7 @@ const Cart = () => {
   let [total, setTotel] = useState([])
   useEffect(() => {
     getCart()
-  }, [])
+  }, [user])
   let updateCart = () =>{
     getCart()
   } 
@@ -183,9 +183,12 @@ const Cart = () => {
               <div className="row">
                 <div className="col-lg-8 col-md-6">
                   <div className="tm-buttongroup">
+                    <Link to="/products">
+                      
                     <butoon type="submit" href="#" className="tm-button">
                       Continue Shopping
                     </butoon>
+                    </Link>
                     <butoon type="submit" href="#" className="tm-button" onClick={() =>updateCart()}>
                       Update Cart
                     </butoon>
@@ -224,9 +227,11 @@ const Cart = () => {
                         </tbody>
                       </table>
                     </div>
+                    <Link to="/checkout">
                     <butoon type="submit" href="#" className="tm-button">
                       Proceed To Checkout
                     </butoon>
+                    </Link>
                   </div>
                 </div>
               </div>

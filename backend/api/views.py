@@ -11,6 +11,8 @@ from .serializers import UserSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
 
 from .serializers import AddressSerializer,ProductsSerializer,WishListSerializer,CartItemSerializer
 from backend.models import Address,Products,WishList,CartItem
@@ -88,6 +90,10 @@ class ProductsViewSet(viewsets.ModelViewSet):
     queryset = Products.objects.all()
     serializer_class = ProductsSerializer
     lookup_field = 'slug'
+    # filter_backends = [DjangoFilterBackend]
+    filter_backends = [filters.SearchFilter]
+    filterset_fields = ['=name','slug','category','price','sub_category']
+    
     
 # class ProductView(viewsets.ModelViewSet):
 #     queryset = Products.objects.all()
@@ -106,13 +112,20 @@ class ProductsViewSet(viewsets.ModelViewSet):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def AddTOWishList(self,request,*args, **kwargs):
-    user = self.request.user 
-    serializer=WishListSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save(user=user)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+def AddTOWishList(request, slug):
+    user = request.user 
+    item = get_object_or_404(Products,slug=slug)
+    print(request.data.get('productID'))
+    product_id = request.data.get('productID')
+    try:
+        item1 = WishList.objects.filter(product=product_id,user=user)
+        # print("already has ..: ",item1[2])
+        return Response({'message': 'Item is already in WishList.'}, status=status.HTTP_200_OK)
+    except:
+        product,created = WishList.objects.get_or_create(product=item,user = user,)
+        return Response({'message': 'Item added successfully.'}, status=status.HTTP_201_CREATED)
+
+
 
 
 class WishlistAPIView(generics.ListCreateAPIView):
@@ -123,7 +136,13 @@ class WishlistAPIView(generics.ListCreateAPIView):
         return WishList.objects.filter(user=self.request.user)
     
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        # serializer.save(user=self.request.user)
+        user = self.request.user
+        # if not user.is_valid:
+        item = get_object_or_404(Products, pk=self.kwargs['pk'])
+        serializer.save(owner=user, item=item)
+        # else:                
+        #     raise serializers.ValidationError("This is not a customer account.Please login as customer.")
     
     def delete(self, request, *args, **kwargs):
         instance = self.request.user
@@ -136,8 +155,18 @@ class WishlistAPIView(generics.ListCreateAPIView):
             return Response({'message': 'Item not found in cart.'}, status=status.HTTP_404_NOT_FOUND) 
         
     def post(self, request, *args, **kwargs):
-        id = request.data.get('productID', None)
-        print(id)
+        # id = request.data.get('productID', None)
+        instance = self.request.user
+        product_id = request.data.get('productID')
+        print(product_id)
+        item = get_object_or_404(Products,id=product_id)
+        # if not user.is_valid:
+        # try:
+        #     wishlist_item = WishList.objects.get_or_create(user=instance, product=product_id)
+        #     wishlist_item.save()
+        #     return Response({'message': 'Item removed from cart.'}, status=status.HTTP_204_NO_CONTENT)
+        # except WishList.DoesNotExist:
+        #     return Response({'message': 'Item not found in cart.'}, status=status.HTTP_404_NOT_FOUND)
         
     
      
@@ -160,7 +189,6 @@ def CartItemview(request):
     user = request.user
     cart_items = user.cartitem_set.filter()
     # cart_items = CartItem.objects.filter(user=request.user)
-
     # Calculate the subtotal by iterating over the cart items
     subtotal = 0
     for item in cart_items:
@@ -174,31 +202,6 @@ def CartItemview(request):
     return Response(data, status=status.HTTP_200_OK)
 
 
-# class CartItemView(viewsets.ModelViewSet):
-#     permission_classes = (IsAuthenticated,)
-#     # queryset = CartItem.objects.all()
-#     serializer_class = CartItemSerializer
-    
-#     # lookup_field = 'slug'
-    
-#     def get_queryset(self):
-#         # user = self.request.user
-#         # cart_items = user.cartitem_set.filter()
-#         cart_items = CartItem.objects.filter(user=self.request.user)
-        
-#     # cart_items = CartItem.objects.filter(user=request.user)
-
-#     # Calculate the subtotal by iterating over the cart items
-#         subtotal = 0
-#         for item in cart_items:
-#             subtotal += item.product.price * item.quantity
-
-#     # Create a dictionary to store the subtotal and cart items
-#         data = {
-#             'subtotal': subtotal,
-#             'cart_items': CartItemSerializer(cart_items, many=True).data
-#         }
-#         return Response(data, status=status.HTTP_200_OK)
 
 class CartItemView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
@@ -233,3 +236,22 @@ class CartItemView(generics.ListCreateAPIView):
             return Response({'message': 'Item removed from cart.'}, status=status.HTTP_204_NO_CONTENT)
         except CartItem.DoesNotExist:
             return Response({'message': 'Item not found in cart.'}, status=status.HTTP_404_NOT_FOUND)      
+        
+        
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def Addtocart(request, slug):
+    item = get_object_or_404(Products, slug=slug)
+    print(item)
+    product_id = request.data.get('productID')
+    product_q = request.data.get('quantity')
+    print(product_q)
+    order_item, created = CartItem.objects.get_or_create(
+        product=item,
+        user=request.user,
+        quantity=product_q,
+    )
+    # order_item.save()
+    return Response({"message": "Item added to your cart", }, status=status.HTTP_200_OK)
+
+    

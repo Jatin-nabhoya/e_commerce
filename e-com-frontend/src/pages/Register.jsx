@@ -23,21 +23,7 @@ const Register = () => {
     // console.log(Data);
     // loginUser(Data)
     RegisterUser(Data);
-    // let response = await fetch('http://127.0.0.1:8000/api/register/', {
-    //         method: 'POST',
-    //         headers: {
-    //             'content-type': 'application/json'
-    //         },
-    //         body:data
-    //     })
-    //     let data = await response.json()
-    //     console.log(data)
-    //     if(response.status === 200) {
-    //         navigate('/login')
-    //     }else{
-    //         alert("something went wrong!!")
-    //     }
-    // reset();
+    
   };
 
 

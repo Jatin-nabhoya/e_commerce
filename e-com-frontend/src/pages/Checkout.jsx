@@ -28,7 +28,8 @@ const Checkout = () => {
 
   useEffect(() => {
     getCart()
-  }, [])
+    getAddress()
+  }, [user])
 
   let getCart = async () => {
     let response = await fetch("http://127.0.0.1:8000/api/cart/", {
@@ -49,6 +50,24 @@ const Checkout = () => {
       logoutUser()
     }
   }
+
+  let [addresses, setAddresses] = useState([])
+  let getAddress = async () => {
+    let response = await fetch("http://127.0.0.1:8000/api/address/", {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + String(authToken.access)
+      }
+    })
+    let data = await response.json()
+    if (response.status === 200) {
+      setAddresses(data[0])
+    } else if (response.statusText === 'Unauthorized') {
+      logoutUser()
+    }
+  }
+  console.table(addresses)
 
   return (
     <div>
@@ -98,21 +117,21 @@ const Checkout = () => {
                     <div className="tm-form-inner">
                       <div className="tm-form-field tm-form-fieldhalf">
                         <label htmlFor="billingform-firstname">First name*</label>
-                        <input type="text" id="billingform-firstname" />
+                        <input type="text" id="billingform-firstname" value={user.username}/>
                       </div>
                       <div className="tm-form-field tm-form-fieldhalf">
-                        <label htmlFor="billingform-lastname">Last name*</label>
+                        <label htmlFor="billingform-lastname">Last name (Optional)</label>
                         <input type="text" id="billingform-lastname" />
                       </div>
                       <div className="tm-form-field">
                         <label htmlFor="billingform-companyname">
-                          Company name
+                          Company name (Optional)
                         </label>
                         <input type="text" id="billingform-companyname" />
                       </div>
                       <div className="tm-form-field">
-                        <label htmlFor="billingform-email">Email address</label>
-                        <input type="email" id="billingform-email" />
+                        <label htmlFor="billingform-email">Email address*</label>
+                        <input type="email" id="billingform-email" value={user.email} />
                       </div>
                       <div className="tm-form-field">
                         <label htmlFor="billingform-phone">Phone (Optional)</label>
@@ -122,7 +141,7 @@ const Checkout = () => {
                         <label htmlFor="billingform-country">Country</label>
                         <select name="billingform-country" id="billingform-country">
                           <option value="bangladesh">United States</option>
-                          <option value="bangladesh">Mexico</option>
+                          <option value="bangladesh">India</option>
                           <option value="bangladesh">Australia</option>
                           <option value="bangladesh">Germany</option>
                           <option value="bangladesh">Sweden</option>
@@ -130,22 +149,23 @@ const Checkout = () => {
                         </select>
                       </div>
                       <div className="tm-form-field">
-                        <label htmlFor="billingform-address">Address</label>
+                        <label htmlFor="billingform-address">Address*</label>
                         <input
                           type="text"
                           id="billingform-address"
                           placeholder="Apartment, Street Address"
+                          value={addresses.street}
                         />
                       </div>
                       <div className="tm-form-field tm-form-fieldhalf">
-                        <label htmlFor="billingform-streetaddress">State</label>
-                        <input type="text" id="billingform-streetaddress" />
+                        <label htmlFor="billingform-streetaddress">State*</label>
+                        <input type="text" id="billingform-streetaddress" value={addresses.state} />
                       </div>
                       <div className="tm-form-field tm-form-fieldhalf">
                         <label htmlFor="billingform-zipcode">Zip / Postcode</label>
-                        <input type="text" id="billingform-zipcode" />
+                        <input type="text" id="billingform-zipcode" value={addresses.zip_code} />
                       </div>
-                      <div className="tm-form-field">
+                      {/* <div className="tm-form-field">
                         <input
                           type="checkbox"
                           name="billform-dirrentswitch"
@@ -154,67 +174,7 @@ const Checkout = () => {
                         <label htmlFor="billform-dirrentswitch">
                           <b>Ship to another address</b>
                         </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="tm-checkout-differentform">
-                    <div className="tm-form-inner">
-                      <div className="tm-form-field tm-form-fieldhalf">
-                        <label htmlFor="differentform-firstname">First name*</label>
-                        <input type="text" id="differentform-firstname" />
-                      </div>
-                      <div className="tm-form-field tm-form-fieldhalf">
-                        <label htmlFor="differentform-lastname">Last name*</label>
-                        <input type="text" id="differentform-lastname" />
-                      </div>
-                      <div className="tm-form-field">
-                        <label htmlFor="differentform-companyname">
-                          Company name
-                        </label>
-                        <input type="text" id="differentform-companyname" />
-                      </div>
-                      <div className="tm-form-field">
-                        <label htmlFor="differentform-email">Email address</label>
-                        <input type="email" id="differentform-email" />
-                      </div>
-                      <div className="tm-form-field">
-                        <label htmlFor="differentform-phone">
-                          Phone (Optional)
-                        </label>
-                        <input type="text" id="differentform-phone" />
-                      </div>
-                      <div className="tm-form-field">
-                        <label htmlFor="differentform-country">Country</label>
-                        <select
-                          name="differentform-country"
-                          id="differentform-country"
-                        >
-                          <option value="bangladesh">United States</option>
-                          <option value="bangladesh">Mexico</option>
-                          <option value="bangladesh">Australia</option>
-                          <option value="bangladesh">Germany</option>
-                          <option value="bangladesh">Sweden</option>
-                          <option value="bangladesh">France</option>
-                        </select>
-                      </div>
-                      <div className="tm-form-field">
-                        <label htmlFor="differentform-address">Address</label>
-                        <input
-                          type="text"
-                          id="differentform-address"
-                          placeholder="Apartment, Street Address"
-                        />
-                      </div>
-                      <div className="tm-form-field tm-form-fieldhalf">
-                        <label htmlFor="differentform-streetaddress">State</label>
-                        <input type="text" id="differentform-streetaddress" />
-                      </div>
-                      <div className="tm-form-field tm-form-fieldhalf">
-                        <label htmlFor="differentform-zipcode">
-                          Zip / Postcode
-                        </label>
-                        <input type="text" id="differentform-zipcode" />
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>

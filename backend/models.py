@@ -91,3 +91,14 @@ class CartItem(models.Model):
         
     def __str__(self):
         return self.user.username
+    
+
+# class Order(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE,null=True, blank=True)
+#     item = models.ManyToManyField(CartItem,blank=True, null=True)
+#     start_date = models.DateTimeField(auto_now_add=True)
+#     ordered_date = models.DateTimeField()
+#     ordered = models.BooleanField(default=False)
+
+#     def __str__(self):
+#         return self.user.username

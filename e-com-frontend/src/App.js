@@ -30,6 +30,7 @@ import ProductDetail from './pages/ProductDetail';
 
 import AuthContext from './context/AuthContext';
 import {AuthProvider} from './context/AuthContext';
+import ProductsCategory from './pages/ProductsCategory';
 
 
 
@@ -47,6 +48,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<About />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/products/:slug" element={<ProductsCategory />} />
             <Route path="/ProductDetail/:slug" element={<ProductDetail />} />
             <Route path="/myaccount" element={<MyAccount />} ></Route>
             <Route path="/checkout" element={<Checkout />} />

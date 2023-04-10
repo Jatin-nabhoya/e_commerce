@@ -33,6 +33,7 @@ const MyAccount = () => {
     let data = await response.json()
     if (response.status === 200) {
       setAddresses(data)
+      console.table(data[0])
     } else if (response.statusText === 'Unauthorized') {
       logoutUser()
     }
@@ -157,9 +158,10 @@ const MyAccount = () => {
                         manage your shipping and billing addresses, and edit your
                         password and account details.
                       </p>
-                      <ul>
+                      {/* <ul>
                         {addresses.map(data => (
                           <li>
+                            {console.log(data)}
                             <ul>
                               <li key={data.id}>{data.street}</li>
                               <li key={data.id}>{data.city}</li>
@@ -169,7 +171,7 @@ const MyAccount = () => {
                           </li>
 
                         ))}
-                      </ul>
+                      </ul> */}
 
                     </div>
                   </div>
@@ -243,11 +245,24 @@ const MyAccount = () => {
                       <div className="row">
                         <div className="col-lg-6 col-md-6">
                           <div className="tm-myaccount-address-billing">
-                            <a href="#" className="edit-button">
+                            {/* <a href="#" className="edit-button">
                               Edit
-                            </a>
+                            </a> */}
                             <h3>Billing Address</h3>
+                            {addresses.map(data => (
+                          
                             <address>
+                              {user.username} 
+                              <br />
+                              {data.street},
+                              <br />
+                              {data.city} ,<br />
+                              {data.state} <br />
+                              {data.zip_code}
+                            </address>
+
+                        ))}
+                            {/* <address>
                               Jonathon Doe
                               <br />
                               Example company
@@ -255,24 +270,28 @@ const MyAccount = () => {
                               516 Wintheiser Circles <br />
                               Lake Jordanmouth <br />
                               Jordan
-                            </address>
+                            </address> */}
                           </div>
                         </div>
                         <div className="col-lg-6 col-md-6 mt-30 mt-md-0">
                           <div className="tm-myaccount-address-shipping">
-                            <a href="#" className="edit-button">
+                            {/* <a href="#" className="edit-button">
                               Edit
-                            </a>
+                            </a> */}
                             <h3>Shipping Address</h3>
-                            <address>
-                              Jonathon Doe
-                              <br />
-                              Example company
-                              <br />
-                              516 Wintheiser Circles <br />
-                              Lake Jordanmouth <br />
-                              Jordan
-                            </address>
+                            {addresses.map(data => (
+                          
+                          <address>
+                            {user.username} 
+                            <br />
+                            {data.street},
+                            <br />
+                            {data.city} ,<br />
+                            {data.state} <br />
+                            {data.zip_code}
+                          </address>
+
+                      ))}
                           </div>
                         </div>
                       </div>

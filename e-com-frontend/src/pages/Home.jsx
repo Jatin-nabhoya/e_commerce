@@ -40,8 +40,8 @@ import Carousel from "../components/Carousel";
 
 const Home = () => {
 
-  const BL = [ 
-    Brandlogo1 , Brandlogo2, Brandlogo3, Brandlogo4, Brandlogo5,Brandlogo1
+  const BL = [
+    Brandlogo1, Brandlogo2, Brandlogo3, Brandlogo4, Brandlogo5, Brandlogo1
   ]
 
 
@@ -150,21 +150,23 @@ const Home = () => {
               <div className="main row">
 
                 {product.map(data => (
-
-
-                  <div className="col-4 mb-3 mt-2 col-lg-4 col-md-6 col-sm-6 col-12">
+                  data.id<=6 ?
+                    (
+                      
+                      <div className="col-4 mb-3 mt-2 col-lg-4 col-md-6 col-sm-6 col-12">
                     <Link to={`/ProductDetail/${data.slug}`} className="nav-link">
                       <Product data={data} />
                     </Link>
 
-                  </div>
+                  </div>) : null 
+                  
                 ))}
               </div>
 
             </div>
             <div class="tm-product-loadmore text-center mt-50">
-                        <Link to="Products" class="tm-button nav-link">All Products</Link>
-                    </div>
+              <Link to="Products" class="tm-button nav-link">All Products</Link>
+            </div>
           </div>
         </div>
 
@@ -207,7 +209,10 @@ const Home = () => {
                   <h6>Super deal of the Month</h6>
                   <h1>Brand ear ring on <span>$250</span> only</h1>
                   <div className="tm-countdown" data-countdown="2020/10/12" />
-                  <a href="product-details.html" className="tm-button nav-link">Shop now</a>
+                  {/* <a href="product-details.html" className="tm-button nav-link">Shop now</a> */}
+                  <Link to="/Products" className="tm-button nav-link">
+                    Shop Now
+                  </Link>
                 </div>
               </div>
               <div className="col-lg-6 col-12 order-1 order-lg-2">
@@ -222,14 +227,13 @@ const Home = () => {
         <div className="tm-section tm-brandlogo-area tm-padding-section bg-grey">
           <div className="container">
             <div className="row  tm-brandlogo-slider">
-             {BL.map(data => (
-
-               <div className="col-2  tm-brandlogo">
-                <a href="#">
-                  <img src={data} alt="brand-logo" />
-                </a>
-              </div>
-                ))}
+              {BL.map(data => (
+                <div className="col-2  tm-brandlogo">
+                  <a href="#">
+                    <img src={data} alt="brand-logo" />
+                  </a>
+                </div>
+              ))}
             </div>
           </div>
         </div>

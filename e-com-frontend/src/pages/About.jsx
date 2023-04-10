@@ -13,6 +13,9 @@ import Brandlogo5 from '../assets/images/brandlogo-5.png';
 
 import Ab from "../assets/images/about-image.jpg"; 
 
+import Ja from '../assets/images/jatin.jpg'
+import pr from '../assets/images/priyesh.jpg'
+import pri from '../assets/images/priyal2.jpg'
 import TM1 from '../assets/images/team-member-1.jpg'
 import TM2 from '../assets/images/team-member-2.jpg'
 import TM3 from '../assets/images/team-member-3.jpg'
@@ -152,7 +155,7 @@ const About = () => {
                   <div className="tm-member">
                     <div className="tm-member-topside">
                       <img
-                        src={TM4}
+                        src={Ja}
                         alt="team member"
                       />
                       <ul>
@@ -188,7 +191,7 @@ const About = () => {
                   <div className="tm-member">
                     <div className="tm-member-topside">
                       <img
-                        src={TM1}
+                        src={pri}
                         alt="team member"
                       />
                       <ul>
@@ -260,7 +263,7 @@ const About = () => {
                   <div className="tm-member">
                     <div className="tm-member-topside">
                       <img
-                        src={TM4}
+                        src={pr}
                         alt="team member"
                       />
                       <ul>

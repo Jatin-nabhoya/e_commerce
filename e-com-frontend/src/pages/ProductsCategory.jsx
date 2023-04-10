@@ -1,20 +1,14 @@
-// import React from 'react'
-// import { Link } from 'react-router-dom'
-// import Rating from '@mui/material/Rating';
-// import './App.scss';
-import img from '../assets/images/products/product-image-1.jpg'
-// import "./App.scss";
 import Product from "../components/Product";
 
 import React, { useContext, useEffect, useState } from 'react';
+import { useParams } from 'react-router';
 import { Link, useNavigate } from 'react-router-dom';
-import AuthContext from '../context/AuthContext';
 
-
-const Products = () => {
-
+export default function ProductsCategory() {
     // let { user, logoutUser, authToken } = useContext(AuthContext);
     let [product, setProduct] = useState([])
+    let [notavailable, setNotavailable] = useState(false)
+    const { slug } = useParams();
 
     useEffect(() => {
         getProducts()
@@ -77,14 +71,30 @@ const Products = () => {
 
                                 {product.map(data => (
 
+                                    data.category == slug ?
+                                        (<>
+                                            <div className="col-4 mb-4 mt-2 col-lg-4 col-md-6 col-sm-6 col-12"
+                                                onClick="refresh">
 
-                                    <div className="col-4 mb-3 mt-2 col-lg-3 col-md-6 col-sm-6 col-12">
-                                        <Link to={`/ProductDetail/${data.slug}`} className="nav-link">
-                                            <Product data={data} />
-                                        </Link>
+                                                <Link to={`/ProductDetail/${data.slug}`} className="nav-link" >
+                                                    <Product data={data} />
+                                                </Link>
 
-                                    </div>
+                                            </div>
+                                        </>) : null
+                                        // setNotavailable(true)
                                 ))}
+                                {/* {notavailable == true ? (
+                                    <>
+                                        <tr>
+                                            <td colSpan={6}>
+                                                <div class="alert alert-warning" role="alert">
+                                                    Your cart is Currently empty.
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </>
+                                ): null} */}
                             </div>
                         </div>
                         {/* <div className="tm-pagination mt-50">
@@ -104,5 +114,3 @@ const Products = () => {
         </div>
     );
 }
-
-export default Products;

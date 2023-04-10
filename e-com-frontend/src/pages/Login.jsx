@@ -10,9 +10,9 @@ import AuthContext from '../context/AuthContext';
 
 
 const Login = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   
-  const [redirect, setRedirect] = useState(false);
+  // const [redirect, setRedirect] = useState(false);
   
   const {
     register,
@@ -30,7 +30,7 @@ const Login = () => {
    
     loginUser(Data)
   
-    setRedirect(true);
+    // setRedirect(true);
 
   }
 
@@ -78,7 +78,7 @@ const Login = () => {
                         }, 
                         pattern: {
                           value: /^[a-zA-Z]+$/,
-                          message: "That's not a valid username where I come from..."
+                          message: "That's not a valid username"
                         }
                         })}
                         onKeyUp={() => {
